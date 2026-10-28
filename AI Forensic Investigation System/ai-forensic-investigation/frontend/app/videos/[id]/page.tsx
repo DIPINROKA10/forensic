@@ -169,7 +169,7 @@ export default function VideoDetailPage({
     setError("");
     setGeneratingReport(true);
     try {
-      const newReport = await api.generateReport(videoId);
+      const newReport = await api.generateVideoReport(videoId);
       setReport(newReport);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to generate report");
@@ -227,37 +227,40 @@ export default function VideoDetailPage({
               <span className="text-sm text-slate-500">Status:</span>
               {statusBadge(video.status)}
               {video.status === "READY" && (
-                <Button
-                  onClick={generateVideoReport}
-                  disabled={generatingReport}
-                  variant="outline"
-                  size="sm"
-                >
-                  {generatingReport ? (
-                    <Loader2 className="h-3 w-3 animate-spin" />
-                  ) : (
-                    <FileText className="h-3 w-3" />
-                  )}
-                  {" "}
-                  {generatingReport ? "Generating…" : "Generate Report"}
-                </Button>
-                {!generatingReport && report && (
+                <>
                   <Button
-                    onClick={async () => {
-                      setError("");
-                      try {
-                        await api.downloadReport(report.id, true);
-                      } catch (e) {
-                        setError(e instanceof Error ? e.message : "Download failed");
-                      }
-                    }}
+                    onClick={generateVideoReport}
+                    disabled={generatingReport}
                     variant="outline"
                     size="sm"
                   >
-                    <Download className="h-3 w-3" /> Download Report
+                    {generatingReport ? (
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                    ) : (
+                      <FileText className="h-3 w-3" />
+                    )}
+                    {" "}
+                    {generatingReport ? "Generating…" : "Generate Report"}
                   </Button>
-                )}
-              </div>
+                  {!generatingReport && report && (
+                    <Button
+                      onClick={async () => {
+                        setError("");
+                        try {
+                          await api.downloadReport(report.id, true);
+                        } catch (e) {
+                          setError(e instanceof Error ? e.message : "Download failed");
+                        }
+                      }}
+                      variant="outline"
+                      size="sm"
+                    >
+                      <Download className="h-3 w-3" /> Download Report
+                    </Button>
+                  )}
+                </>
+              )}
+            </div>
           </div>
 
           {isProcessing && (

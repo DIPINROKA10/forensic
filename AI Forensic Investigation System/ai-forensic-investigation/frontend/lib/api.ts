@@ -692,6 +692,7 @@ export type Investigation = {
   status: string;
   created_by_user_id?: number | null;
   created_at?: string | null;
+  claims?: Claim[];
 };
 
 export type ClaimEvidence = {
