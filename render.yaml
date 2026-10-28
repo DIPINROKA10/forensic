@@ -1,0 +1,66 @@
+# Render Blueprint for the FastAPI backend.
+#
+# The Next.js frontend is deployed separately on Vercel. See DEPLOYMENT.md.
+#
+# Notes:
+#   * The app keeps live-camera sessions in process memory, so this service
+#     must run as a SINGLE instance. Do not enable horizontal scaling.
+#   * A persistent disk is required: MinIO is not available on Render, so the
+#     backend falls back to local filesystem storage under /app/data.
+services:
+  - type: web
+    name: ai-forensic-backend
+    runtime: docker
+    plan: starter
+    region: ohio
+    rootDir: "AI Forensic Investigation System/ai-forensic-investigation/backend"
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    autoDeploy: true
+    # Alembic must run before the API accepts traffic; it is idempotent.
+    dockerCommand: >-
+      sh -c "alembic upgrade head && exec uvicorn app.main:app
+      --host 0.0.0.0 --port $PORT --proxy-headers --forwarded-allow-ips='*'"
+    disk:
+      name: forensic-data
+      mountPath: /app/data
+      sizeGB: 5
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_URL_UNPOOLED
+        sync: false
+      - key: BACKEND_CORS_ORIGINS
+        sync: false
+      - key: QDRANT_URL
+        value: "http://127.0.0.1:6333"
+      - key: QDRANT_API_KEY
+        value: ""
+      - key: LLM_PROVIDER
+        value: simulation
+      - key: LLM_BASE_URL
+        value: ""
+      - key: LLM_API_KEY
+        value: ""
+      - key: LLM_MODEL
+        value: gpt-4o-mini
+      - key: VISION_MODEL
+        value: gpt-4o-mini
+      - key: WHISPER_MODEL
+        value: simulation
+      # Simulation embeddings score low; lower the RAG gate so answers ground.
+      - key: RAG_VERIFICATION_THRESHOLD
+        value: "0.25"
+      # Nothing listens on 9000 here, which forces the local-disk storage
+      # fallback (backed by the persistent disk mounted at /app/data).
+      - key: MINIO_ENDPOINT
+        value: "localhost:9000"
+      - key: DATA_DIR
+        value: data
+      - key: YOLO_MODEL
+        value: yolov8n.pt
+      # Create the first admin, then flip this to "false".
+      - key: ALLOW_PRIVILEGED_REGISTRATION
+        value: "true"

@@ -9,6 +9,9 @@ class Settings(BaseSettings):
     """Application settings loaded from environment / .env."""
 
     DATABASE_URL: str = "postgresql+psycopg2://forensics:forensics_password@localhost:5432/forensics"
+    # Optional direct (non-pooled) URL used only for migrations. Neon's pooled
+    # PgBouncer connection is fine for app traffic but not for Alembic DDL.
+    DATABASE_URL_UNPOOLED: str = ""
 
     SECRET_KEY: str = "change_me"
     JWT_ALGORITHM: str = "HS256"
@@ -20,6 +23,11 @@ class Settings(BaseSettings):
     LOGIN_RATE_LIMIT_ENABLED: bool = True
     LOGIN_RATE_LIMIT_MAX_ATTEMPTS: int = 5
     LOGIN_RATE_LIMIT_WINDOW_SECONDS: float = 60.0
+
+    # Public /auth/register lets the caller choose their own role. Keep True for
+    # local demos; set False on any internet-facing deployment after the first
+    # admin exists, so strangers cannot self-register as ADMIN/SECURITY_OFFICER.
+    ALLOW_PRIVILEGED_REGISTRATION: bool = True
 
     MINIO_ENDPOINT: str = "localhost:9000"
     MINIO_ACCESS_KEY: str = "minioadmin"
@@ -377,7 +385,9 @@ class Settings(BaseSettings):
     DEMO_DATA_DIR: str = os.path.join(BACKEND_DIR, "data", "demo_investigation")
 
     model_config = SettingsConfigDict(
-        env_file=".env", env_file_encoding="utf-8", extra="ignore"
+        # Read the app-root .env (Neon CLI writes DATABASE_URL there) and then
+        # a backend-local .env if one exists, which takes precedence.
+        env_file=("../.env", ".env"), env_file_encoding="utf-8", extra="ignore"
     )
 
     @property

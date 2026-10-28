@@ -1,0 +1,19 @@
+# Keep the build context small: node-style caches, test artifacts, logs and
+# runtime data must never be baked into the image (Render/Cloud Run bill by
+# context size and transfer time).
+__pycache__/
+*.py[cod]
+*.log
+.pytest_cache/
+.mypy_cache/
+.venv/
+venv/
+env/
+tests/
+data/
+backups/
+*.sqlite3
+*.db
+.env
+.env.*
+Dockerfile.delta

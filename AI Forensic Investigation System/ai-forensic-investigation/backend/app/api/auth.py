@@ -35,6 +35,11 @@ def register(payload: UserCreate, db: Session = Depends(get_db)):
     role = payload.role or "INVESTIGATOR"
     if role not in VALID_ROLES:
         raise HTTPException(status_code=400, detail=f"Invalid role. Allowed: {VALID_ROLES}")
+    if role in ("ADMIN", "SECURITY_OFFICER") and not settings.ALLOW_PRIVILEGED_REGISTRATION:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Registration with privileged roles is disabled",
+        )
 
     user = User(
         email=payload.email.lower(),

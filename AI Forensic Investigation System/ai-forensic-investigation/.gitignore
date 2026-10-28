@@ -32,3 +32,4 @@ tests/*.db
 Thumbs.db
 .idea/
 .vscode/
+.neon
