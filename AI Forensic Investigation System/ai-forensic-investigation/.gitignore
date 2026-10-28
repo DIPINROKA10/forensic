@@ -1,0 +1,34 @@
+# Secrets / environment
+.env
+.env.local
+*.env
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# Node
+node_modules/
+.next/
+out/
+
+# Data (uploaded videos, clips, frames - not source)
+data/
+!data/evaluation/
+!data/evaluation/benchmark.jsonl
+models/*.pt
+
+# Test artifacts
+tests/*.db
+.pytest_cache/
+
+# Editors / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

@@ -1,0 +1,9 @@
+node_modules
+.next
+out
+build
+.env*.local
+npm-debug.log*
+# Dev-only TLS material for the physical-camera HTTPS flow (see scripts/make_dev_cert.py)
+scripts/cert.pem
+scripts/key.pem
