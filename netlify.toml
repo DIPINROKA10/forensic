@@ -1,0 +1,16 @@
+# Netlify config for the Next.js frontend.
+#
+# The backend (FastAPI) runs on Render; Netlify only hosts the frontend.
+# Set NEXT_PUBLIC_API_URL in Netlify's environment variables (Site settings ->
+# Environment variables); it is baked in at build time.
+
+[build]
+  base = "AI Forensic Investigation System/ai-forensic-investigation/frontend"
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"

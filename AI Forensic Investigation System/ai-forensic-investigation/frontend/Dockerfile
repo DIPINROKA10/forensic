@@ -7,7 +7,7 @@ RUN npm ci
 # ---- build ----
 FROM node:20-alpine AS builder
 WORKDIR /app
-ENV NEXT_TELEMETRY_DISABLED=1 NEXT_PUBLIC_API_URL=http://localhost:8000
+ENV NEXT_TELEMETRY_DISABLED=1 NEXT_PUBLIC_API_URL=http://localhost:8000 NEXT_OUTPUT=standalone
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN npm run build
