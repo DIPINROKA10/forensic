@@ -1212,7 +1212,7 @@ export default function LivePage() {
                         <Download className="h-3 w-3" /> Save Report
                       </Button>
                     )}
-                  )}
+                  </>
                 )}
               </div>
               {streaming && (

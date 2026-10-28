@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Film, Box, ListOrdered, Activity, ExternalLink, Play, Loader2 } from "lucide-react";
+import { ArrowLeft, Film, Box, ListOrdered, Activity, ExternalLink, Play, Loader2, FileText, Download } from "lucide-react";
 import { api, Video, Clip, Detection, Event, ProcessingJob, Report } from "@/lib/api";
 import { ProtectedShell } from "@/components/protected-shell";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
