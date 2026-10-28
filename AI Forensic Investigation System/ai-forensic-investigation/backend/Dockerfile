@@ -25,6 +25,10 @@ RUN pip install --no-cache-dir --timeout 120 --retries 8 -r requirements.txt
 
 COPY . .
 
+# Run migrations + uvicorn from a script rather than a shell-form CMD: hosting
+# platforms that re-quote the start command break `sh -c "..."` one-liners.
+RUN chmod +x docker-entrypoint.sh
+
 EXPOSE 8000
 
-CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000} --proxy-headers --forwarded-allow-ips='*'"]
+ENTRYPOINT ["/app/docker-entrypoint.sh"]

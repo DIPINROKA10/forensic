@@ -127,11 +127,13 @@ store â€” fine for a demo, but indexed evidence is lost on every restart.
 4. **Instance type**: Starter with **2 GB RAM minimum** (4 GB recommended).
    The free 512 MB tier will OOM on `import torch`.
 5. **Health Check Path**: `/health`
-6. **Start Command** (overrides the image CMD):
+6. **Start Command / Docker Command**: leave it **empty**.
 
-```bash
-sh -c "alembic upgrade head && exec uvicorn app.main:app --host 0.0.0.0 --port $PORT --proxy-headers --forwarded-allow-ips='*'"
-```
+The image's `ENTRYPOINT` is `backend/docker-entrypoint.sh`, which runs
+`alembic upgrade head` and then uvicorn on `$PORT`. Do not put a
+`sh -c "..."` one-liner in Render's Docker Command field: Render re-quotes the
+value, the whole string is treated as one program name, and the container exits
+with status 127 (`sh: 1: alembic ...: not found`).
 
 7. Add a **Disk**: name `forensic-data`, mount path `/app/data`, 5 GB.
 8. Add the environment variables below, then **Create Web Service**.
@@ -162,7 +164,9 @@ The image installs CPU-only PyTorch and takes ~10â€“20 minutes to build. Wa
 the logs for:
 
 ```
-Running upgrade  -> 0008
+==> alembic upgrade head
+Running upgrade ... -> 0010_camera_pairings
+==> uvicorn on 0.0.0.0:10000
 INFO:     Uvicorn running on http://0.0.0.0:10000
 ```
 
@@ -281,8 +285,9 @@ demo.
 | Symptom | Cause / fix |
 |---|---|
 | Build fails, exit 137 / OOM | Instance too small for the PyTorch build. Use â‰¥2 GB; retry the deploy. |
+| `sh: 1: ...: not found` + exit 127 | A `sh -c "..."` one-liner in Render's Docker Command. Clear that field; the image ENTRYPOINT wraps everything correctly. |
 | App crashes on boot (`torch`, `libGL`) | Dockerfile deps missing â€” this repo installs `libgl1`/`libglib2.0-0`; make sure you did not override the Dockerfile. |
-| `relation "users" does not exist` | Migrations did not run. Check the start command includes `alembic upgrade head`. |
+| `relation "users" does not exist` | Migrations did not run. Check the logs for `==> alembic upgrade head`; the image entrypoint runs it automatically. |
 | `could not connect to server` | `DATABASE_URL` must use `+psycopg2` and include `?sslmode=require` for Neon. |
 | CORS error in browser | `BACKEND_CORS_ORIGINS` must exactly equal the Vercel origin. |
 | API requests go to `localhost:8000` | `NEXT_PUBLIC_API_URL` was missing at build time. Set it, then redeploy Vercel. |

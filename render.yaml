@@ -17,10 +17,9 @@ services:
     dockerfilePath: ./Dockerfile
     healthCheckPath: /health
     autoDeploy: true
-    # Alembic must run before the API accepts traffic; it is idempotent.
-    dockerCommand: >-
-      sh -c "alembic upgrade head && exec uvicorn app.main:app
-      --host 0.0.0.0 --port $PORT --proxy-headers --forwarded-allow-ips='*'"
+    # Migrations + uvicorn are handled by backend/docker-entrypoint.sh (the
+    # image ENTRYPOINT). Do not set dockerCommand: Render re-quotes it and
+    # `sh -c "..."` one-liners fail with exit code 127.
     disk:
       name: forensic-data
       mountPath: /app/data
