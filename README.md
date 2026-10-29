@@ -1,8 +1,23 @@
 # AI Forensic Investigation System
 
+[![Live demo](https://img.shields.io/badge/live%20demo-forensic10.netlify.app-0ea5e9?style=for-the-badge)](https://forensic10.netlify.app)
+[![API](https://img.shields.io/badge/API-forensic--uel9.onrender.com-16a34a?style=for-the-badge)](https://forensic-uel9.onrender.com/health)
+[![Docs](https://img.shields.io/badge/API%20docs-Swagger-85ea2d?style=for-the-badge)](https://forensic-uel9.onrender.com/docs)
+
+![Next.js](https://img.shields.io/badge/Next.js-14.2-000000?logo=next.js&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.111-009688?logo=fastapi&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Neon-336791?logo=postgresql&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white)
+
 An end-to-end platform for video forensics: ingest footage (upload or live camera), detect
 and track objects, build a searchable evidence index, run an agentic investigation over the
 findings, and export a reviewable PDF report.
+
+**Contents:** [Features](#features) · [Architecture](#architecture) · [Tech stack](#tech-stack) ·
+[Repository layout](#repository-layout) · [Quick start](#quick-start-docker-recommended) ·
+[Configuration](#configuration) · [Database](#database-and-migrations) · [Tests](#tests) ·
+[Deployment](#deployment) · [Limitations](#known-limitations) · [Docs](#documentation)
 
 Live deployment:
 
@@ -13,6 +28,9 @@ Live deployment:
 | API docs (Swagger) | https://forensic-uel9.onrender.com/docs |
 | Health check | https://forensic-uel9.onrender.com/health |
 | Database | Neon Postgres 18 (`aws-us-east-2`) |
+
+> The API is on a free Render instance: it sleeps after 15 minutes idle, so the first
+> request afterwards can take ~50 seconds. Open `/health` once before demoing.
 
 `/health` reports each dependency (`database`, `qdrant`, `storage`) separately. The API is
 considered healthy when `database.ok` is `true`, even if the optional vector store is
