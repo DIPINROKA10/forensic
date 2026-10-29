@@ -86,6 +86,7 @@ cannot provide. It also keeps live-camera sessions in process memory, so it must
 |-- README.md                  this file
 `-- AI Forensic Investigation System/
     `-- ai-forensic-investigation/
+        |-- README.md              app-level setup, commands, troubleshooting
         |-- backend/
         |   |-- app/
         |   |   |-- api/           REST routers (auth, videos, live, reports, ...)
